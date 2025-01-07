@@ -1,0 +1,117 @@
+-- sc_user 테이블 생성
+create table sc_user (
+    user_no number primary key,
+   user_id varchar2(50) not null,
+   user_pwd varchar2(50) not null,
+   user_name varchar2(50) not null,
+   user_nick varchar2(50) not null,
+   user_email varchar2(100) not null,
+   user_age number,
+   user_gender varchar2(10),
+   user_phone varchar2(100) not null,
+   user_addr varchar2(500) not null,
+   user_date date
+);
+
+
+-- sc_category 테이블 생성
+create table sc_category(
+    category_no number primary key,
+    category_code varchar2(50) UNIQUE,
+    category_name varchar2(100) not null
+
+);
+
+
+-- sc_board 테이블 생성
+create table sc_board(
+    board_no number primary key,
+    user_no number not null,
+    board_title varchar2(500) not null,
+    board_cont varchar2(2000) not null,
+    board_pwd varchar2(50) not null,
+    board_date date,
+    board_update date,
+    board_img varchar2(500),
+    board_hit number default 0,
+    constraint fk_user_no foreign key (user_no) references sc_user(user_no) on delete cascade
+);
+
+
+
+-- sc_admin 테이블 생성
+create table sc_admin(
+    admin_id varchar2(50) primary key,
+    admin_pwd varchar2(100) not null,
+    admin_nick varchar2(100) not null
+);
+-- sc_product 테이블 생성
+create table sc_product (
+    product_no number primary key,
+    category_no number not null,
+    product_name varchar2(100) not null,
+    product_price number not null,
+    product_spec varchar2(100),
+    product_qty number,
+    product_hit number default 0,
+    product_image varchar2(200)not null,
+    constraint fk_category_no foreign key (category_no) references sc_category(category_no) on delete cascade
+);
+-- sc_cart 테이블 생성
+create table sc_cart(
+    cart_no number primary key,
+    product_no number not null,
+    category_no number not null,
+    user_no number not null,
+    cart_deliveryfee number,
+    constraint fk3_product_no foreign key (product_no) references sc_product(product_no) on delete cascade,
+    constraint fk3_category_no foreign key (category_no) references sc_category(category_no) on delete cascade,
+    constraint fk3_user_no foreign key (user_no) references sc_user(user_no) on delete cascade 
+);
+
+-- sc_reply 테이블 생성
+create  table sc_reply (
+    reply_no number primary key,
+    board_no number not null,
+    user_no number not null,
+    reply_cont varchar(300) not null,
+    reply_date date, 
+    reply_update date, 
+    constraint board_no_fk foreign key (board_no) references sc_board(board_no) on delete cascade,
+    constraint user_no_fk foreign key (user_no) references sc_user(user_no) on delete cascade
+);
+
+
+
+
+-- sc_review 테이블 생성
+CREATE TABLE sc_review (
+    review_no number primary key,
+    user_no number not null,
+    product_no number not null,
+    category_no number not null,
+    review_cont   varchar2(2000) not null,
+    review_rank   number not null,
+    review_image varchar2(200) not null,
+    review_date   date,
+    review_update date,
+    -- sc_review fk 지정
+    constraint fk1_user_no foreign key (user_no) references sc_user(user_no) on delete cascade,
+    constraint fk1_product_no foreign key (product_no) references sc_product(product_no) on delete set null,
+    constraint fk1_category_no foreign key (category_no) references sc_category(category_no) on delete set null
+);
+
+-- sc_order 테이블 생성
+CREATE TABLE sc_order (
+    order_no number primary key,
+    product_no number not null,
+    category_no number not null,
+    order_date date,
+    order_total   number not null,
+    payment_status number default 1,
+    order_memo varchar2(50) null,
+    -- sc_oeder fk 지정
+    constraint fk2_product_no foreign key (product_no) references sc_product(product_no) on delete cascade,
+    constraint fk2_category_no foreign key (category_no) references sc_category(category_no) on delete cascade
+);
+
