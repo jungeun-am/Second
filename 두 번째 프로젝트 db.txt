@@ -115,3 +115,4 @@ CREATE TABLE sc_order (
     constraint fk2_category_no foreign key (category_no) references sc_category(category_no) on delete cascade
 );
 
+ALTER TABLE sc_board ADD board_type VARCHAR2(25) NOT NULL;
